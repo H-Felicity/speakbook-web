@@ -1,0 +1,10 @@
+{
+  "description": "Enhance English language skills through immersive shadowing with video lessons, translations, and interactive practice tools for learners.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
