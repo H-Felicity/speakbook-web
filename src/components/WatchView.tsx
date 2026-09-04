@@ -1,45 +1,65 @@
 import type { RefObject } from "react"
-import type { LessonSentence } from "../types/lesson"
+
+import type {
+  LessonSentence,
+  SelectedTerm,
+  VocabularyEntry,
+} from "../types/lesson"
+import type { AnchorRect } from "../utils/popoverPosition"
 import Icon from "./Icon"
+import SelectableSentence from "./SelectableSentence"
 import TranscriptList from "./TranscriptList"
 import WordPopover from "./WordPopover"
 
 type WatchViewProps = {
   sentences: LessonSentence[]
+
   currentSentence: LessonSentence
+
   currentSentenceIndex: number
+
   playing: boolean
+
   looping: boolean
   saved: boolean
-  wordOpen: boolean
-  expressionSaved: boolean
+  selectedTerm: SelectedTerm | null
+  selectedVocabularyEntry: VocabularyEntry | null
+  popoverAnchorRect: AnchorRect | null
+  isSelectedExpressionSaved: boolean
   wordPopoverRef: RefObject<HTMLDivElement | null>
   transcriptListRef: RefObject<HTMLDivElement | null>
   onTogglePlaying: () => void
   onToggleLooping: () => void
   onToggleSaved: () => void
-  onToggleWordOpen: () => void
-  onToggleExpressionSaved: () => void
+  onSelectTerm: (term: SelectedTerm, anchorRect: AnchorRect) => void
+  onToggleSavedExpression: () => void
+  onCloseExpressionPopover: () => void
   onOpenShadowPractice: () => void
   onSentenceSelect: (index: number) => void
 }
 
 export default function WatchView({
   sentences,
+
   currentSentence,
+
   currentSentenceIndex,
+
   playing,
   looping,
   saved,
-  wordOpen,
-  expressionSaved,
+  selectedTerm,
+  selectedVocabularyEntry,
+  popoverAnchorRect,
+  isSelectedExpressionSaved,
   wordPopoverRef,
   transcriptListRef,
   onTogglePlaying,
   onToggleLooping,
   onToggleSaved,
-  onToggleWordOpen,
-  onToggleExpressionSaved,
+  onSelectTerm,
+  onToggleSavedExpression,
+  onCloseExpressionPopover,
   onOpenShadowPractice,
   onSentenceSelect,
 }: WatchViewProps) {
@@ -85,32 +105,20 @@ export default function WatchView({
           <div className="py-5 text-center md:py-6">
             <div ref={wordPopoverRef} className="sentence-line">
               <p className="mx-auto max-w-[570px] text-[24px] font-semibold leading-[1.25] tracking-[-0.035em] md:text-[29px]">
-                {currentSentence.english.split(" ").map((word, index) =>
-                  word === "weather" ? (
-                    <span key={`${word}-${index}`} className="word-anchor">
-                      <button
-                        type="button"
-                        onClick={onToggleWordOpen}
-                        className="word-trigger"
-                        aria-expanded={wordOpen}
-                      >
-                        weather
-                      </button>{" "}
-                    </span>
-                  ) : (
-                    <span
-                      key={`${word}-${index}`}
-                      className={index === 1 ? "text-primary" : ""}
-                    >
-                      {word}{" "}
-                    </span>
-                  ),
-                )}
+                <SelectableSentence
+                  sentence={currentSentence}
+                  selectedTerm={selectedTerm}
+                  onSelectTerm={onSelectTerm}
+                />
               </p>
-              {wordOpen && (
+              {selectedTerm && selectedVocabularyEntry && popoverAnchorRect && (
                 <WordPopover
-                  expressionSaved={expressionSaved}
-                  onToggleExpressionSaved={onToggleExpressionSaved}
+                  selectedTerm={selectedTerm}
+                  vocabularyEntry={selectedVocabularyEntry}
+                  anchorRect={popoverAnchorRect}
+                  isSaved={isSelectedExpressionSaved}
+                  onToggleSaved={onToggleSavedExpression}
+                  onRequestClose={onCloseExpressionPopover}
                 />
               )}
             </div>
