@@ -1,11 +1,16 @@
 import type { ReactNode } from "react"
+
 import type { LessonMode } from "../types/lesson"
+
 import Icon from "./Icon"
 
 type AppShellProps = {
   currentMode: LessonMode
+
   isRecording: boolean
+
   onModeChange: (mode: LessonMode) => void
+
   children: ReactNode
 }
 
@@ -13,15 +18,22 @@ const tabs: LessonMode[] = ["Watch", "Shadow", "Expressions"]
 
 export default function AppShell({
   currentMode,
+
   isRecording,
+
   onModeChange,
+
   children,
 }: AppShellProps) {
   return (
     <main className="min-h-full bg-background p-5 text-foreground md:p-10">
       <div className="mx-auto max-w-[1376px]">
         <p className="mb-4 text-[14px] text-muted-foreground">
-          {currentMode === "Shadow" ? "03 Shadow Ready" : "01 Watch Default"}
+          {currentMode === "Shadow"
+            ? "03 Shadow Ready"
+            : currentMode === "Expressions"
+              ? "05 Expressions"
+              : "01 Watch Default"}
         </p>
         <section className="overflow-hidden rounded-[12px] border border-border bg-card">
           <header className="relative flex h-16 items-center border-b border-border px-6">
@@ -38,6 +50,7 @@ export default function AppShell({
               {tabs.map((tab) => (
                 <button
                   key={tab}
+                  data-preserve-popover="true"
                   disabled={isRecording}
                   onClick={() => onModeChange(tab)}
                   className={`tab ${currentMode === tab ? "tab-active" : ""}`}
